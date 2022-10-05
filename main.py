@@ -3,7 +3,10 @@ from web3 import Web3
 import json
 import pprint
 
-# Trying EIP20_ABI
+# Contract address
+address = '0xa688D975311CFC7e634B8877dC508B527eF4566E'
+
+# EIP20_ABI
 EIP20_ABI = json.loads('[{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],'
                        '"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{'
                        '"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve",'
@@ -31,8 +34,7 @@ EIP20_ABI = json.loads('[{"constant":true,"inputs":[],"name":"name","outputs":[{
                        '"type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Approval",'
                        '"type":"event"}]')
 
-# Contract address and abi
-address = '0xa688D975311CFC7e634B8877dC508B527eF4566E'
+# Contract ABI
 abi = json.loads('[{"inputs": [],"name": "informationRequest","outputs": [],"stateMutability": "nonpayable", '
                  '"type": "function"},{"inputs": [],"stateMutability": "nonpayable","type": "constructor"},'
                  '{"anonymous": false,"inputs": [],"name": "informationRequestEvent","type": "event"},{"inputs": [{'
@@ -41,6 +43,7 @@ abi = json.loads('[{"inputs": [],"name": "informationRequest","outputs": [],"sta
                  '"name": "_information","outputs": [{"internalType": "string","name": "","type": "string"}],'
                  '"stateMutability": "view","type": "function"}]')
 
+# ABIs concatenation
 finalAbi = abi + EIP20_ABI
 
 # Connect to infura
@@ -57,23 +60,24 @@ nonce = w3.eth.get_transaction_count('0xb8f8597067bB30cA102869d6dc0e1ddb1a58D4c6
 private_key = "private_key"
 
 # Test contract link
-# print(contract.get_function_by_name('storeInformation'))
+print(contract.get_function_by_name('storeInformation'))
 
 # Building transaction
 transaction = contract.functions.transfer(
     address,
     1,
-).build_transaction({
-    'chainId': 1,
-    'gas': 70000,
-    'maxFeePerGas': w3.toWei('2', 'gwei'),
-    'maxPriorityFeePerGas': w3.toWei('1', 'gwei'),
-    'nonce': nonce,
-})
+    ).build_transaction({
+        'chainId': 1,
+        'gas': 70000,
+        'maxFeePerGas': w3.toWei('2', 'gwei'),
+        'maxPriorityFeePerGas': w3.toWei('1', 'gwei'),
+        'nonce': nonce,
+    })
 
 # Transaction signing
 signed_transaction = w3.eth.account.sign_transaction(transaction, private_key=private_key)
 
+# Transaction sending
 w3.eth.send_raw_transaction(signed_transaction.rawTransaction)
 
 # contract.functions.storeInformation('Information').transfer()
