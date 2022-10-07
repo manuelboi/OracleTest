@@ -7,18 +7,22 @@ contract OracleTest {
 
     event informationRequestEvent();
 
-    string public _information;
+    string _information;
 
     constructor () {
         _information = "";
     }
 
-    function informationRequest() public {
-        emit informationRequestEvent();
+    function getInformation() public view returns (string memory) {
+        return _information;
     }
 
-    function storeInformation(string memory information) public {
+    function setInformation(string memory information) public {
         _information = information;
+    }
+
+    function informationRequest() public {
+        emit informationRequestEvent();
     }
 
 }
